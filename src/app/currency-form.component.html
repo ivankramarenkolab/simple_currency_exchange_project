@@ -1,0 +1,19 @@
+<div>
+  <label for="currency1">Currency 1:</label>
+  <select id="currency1" [(ngModel)]="currency1" (ngModelChange)="IsCurrency1Change(); IsCurrency2Change()">
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+    <option value="UAH">UAH</option>
+  </select>
+  <input type="text" [(ngModel)]="input1" (ngModelChange)="isInput1Changed()">
+</div>
+
+<div>
+  <label for="currency2">Currency 2:</label>
+  <select id="currency2" [(ngModel)]="currency2" (ngModelChange)="IsCurrency1Change(); IsCurrency2Change()">
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+    <option value="UAH">UAH</option>
+  </select>
+  <input type="text" [(ngModel)]="input2" (ngModelChange)="isInput2Changed()"/>
+</div>
