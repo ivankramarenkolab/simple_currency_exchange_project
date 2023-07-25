@@ -1,13 +1,14 @@
-import {Component} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import { timer, Subscription } from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
+import { CurrencyApiService } from './currency-api.service';
+import { Subscription, timer, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-currency-form',
   templateUrl: './currency-form.component.html',
   styleUrls: ['./currency-form.component.scss']
 })
-export class CurrencyFormComponent {
+export class CurrencyFormComponent implements OnDestroy {
   currency1: string = "USD";
   currency2: string = "EUR";
   input1: number = 1;
@@ -15,8 +16,10 @@ export class CurrencyFormComponent {
   output: number = 0;
   input1Check: boolean = true;
   input2Check: boolean = false;
+  private timerRef1: Subscription | null = null;
+  private timerRef2: Subscription | null = null;
 
-  constructor(private http: HttpClient) {
+  constructor(private currencyApiService: CurrencyApiService) {
   }
 
   ngOnInit() {
@@ -24,23 +27,12 @@ export class CurrencyFormComponent {
   }
 
   sendRequestToServer() {
-    const apiKey = "ILkLGGAJAUSSBv8BIyhgAQn4csteUCIu";
-    let url, requestOptions;
-
-    url = `https://api.apilayer.com/currency_data/convert?to=${this.currency2}&from=${this.currency1}&amount=${this.input1}`;
-
-    const myHeaders = new HttpHeaders().set("apikey", apiKey);
-
-    requestOptions = {
-      headers: myHeaders
-    };
-
-    this.http.get(url, requestOptions)
+    this.currencyApiService.sendCurrencyConversionRequest(this.currency1, this.currency2, this.input1)
       .subscribe(
         (result: any) => {
           this.output = result.result;
           this.input2 = this.output;
-          console.log(this.input2)
+          console.log(this.input2);
         },
         (error: any) => {
           console.log('error', error);
@@ -48,18 +40,19 @@ export class CurrencyFormComponent {
       );
   }
 
-  private timerRef1: Subscription | null = null;
-  private timerRef2: Subscription | null = null;
-
   isInput1Changed() {
     if (!(this.output === this.input1)) {
       if (this.timerRef1) {
         this.timerRef1.unsubscribe();
       }
-      this.timerRef1 = timer(2000).subscribe(() => {
-        this.sendRequestToServer();
-        this.input1Check = true;
-        this.input2Check = false;
+      this.timerRef1 = timer(2000).pipe(
+        switchMap(() => {
+          this.sendRequestToServer();
+          this.input1Check = true;
+          this.input2Check = false;
+          return of(null);
+        })
+      ).subscribe(() => {
         this.timerRef1 = null;
       });
     }
@@ -71,19 +64,26 @@ export class CurrencyFormComponent {
     }
   }
 
+  isInput2Changed() {
+    if (!(this.output === this.input2)) {
+      if (this.timerRef2) {
+        this.timerRef2.unsubscribe();
+      }
+      this.timerRef2 = timer(2000).pipe(
+        switchMap(() => {
+          this.sendRequestToServer2();
+          this.input1Check = false;
+          this.input2Check = true;
+          return of(null);
+        })
+      ).subscribe(() => {
+        this.timerRef2 = null;
+      });
+    }
+  }
+
   sendRequestToServer2() {
-    const apiKey = "ILkLGGAJAUSSBv8BIyhgAQn4csteUCIu";
-    let url, requestOptions;
-
-    url = `https://api.apilayer.com/currency_data/convert?to=${this.currency1}&from=${this.currency2}&amount=${this.input2}`;
-
-    const myHeaders = new HttpHeaders().set("apikey", apiKey);
-
-    requestOptions = {
-      headers: myHeaders
-    };
-
-    this.http.get(url, requestOptions)
+    this.currencyApiService.sendCurrencyConversionRequest(this.currency2, this.currency1, this.input2)
       .subscribe(
         (result: any) => {
           this.output = result.result;
@@ -93,20 +93,6 @@ export class CurrencyFormComponent {
           console.log('error', error);
         }
       );
-  }
-
-  isInput2Changed() {
-    if (!(this.output === this.input2)) {
-      if (this.timerRef2) {
-        this.timerRef2.unsubscribe();
-      }
-      this.timerRef2 = timer(2000).subscribe(() => {
-        this.sendRequestToServer2();
-        this.input1Check = false;
-        this.input2Check = true;
-        this.timerRef2 = null;
-      });
-    }
   }
 
   IsCurrency2Change() {
