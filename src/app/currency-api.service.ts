@@ -17,13 +17,13 @@ export class CurrencyApiService {
   }
 
   getRequestOptions(): any {
-    const myHeaders = new HttpHeaders().set("apikey", this.apiKey);
+    const apiKey = new HttpHeaders().set("apikey", this.apiKey);
     return {
-      headers: myHeaders
+      headers: apiKey
     };
   }
 
-  sendCurrencyConversionRequest(currencyTo: string, currencyFrom: string, amount: number): Observable<any> {
+  convertCurrency(currencyTo: string, currencyFrom: string, amount: number): Observable<any> {
     const url = this.createRequestUrl(currencyTo, currencyFrom, amount);
     const requestOptions = this.getRequestOptions();
     return this.http.get(url, requestOptions);
