@@ -1,0 +1,78 @@
+.currency-form {
+
+  &__title {
+  padding-bottom: 5px;
+  }
+
+  &__row {
+    border: 1px solid #e0e1e5;
+    border-radius: 15px;
+    padding: 18px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__item {
+    position: relative;
+    display: flex;
+    &:first-of-type {
+      padding-bottom: 10px;
+    }
+  }
+  &__label {
+  }
+
+  &__select {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    background-color: gray;
+    width: 75px;
+    border-radius: 2px 0 0 2px;
+    ::ng-deep .ng-clear-wrapper {
+      display: none;
+    }
+    ::ng-deep .ng-dropdown-panel {
+      background-color: grey;
+      width: 75px;
+      top: 29px;
+      right: 0;
+    }
+
+    ::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+      display: flex;
+      justify-content: center;
+      padding: 5px;
+
+      &:hover {
+        background-color: white;
+        opacity: 0.7;
+      }
+    }
+  }
+
+  &__flag {
+  gap: 5px;
+    &__img {
+      height: 18px;
+    }
+  }
+
+  &__input {
+    height: 29px;
+    width: 243px;
+    font-size: 21px;
+    padding-left: 78px;
+    border: 1px solid;
+    border-radius: 2px;
+    box-shadow: 0px 0px 10px rgba(179, 187, 198, 0.45);
+  }
+}
+
+.currency-form__option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

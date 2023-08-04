@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { CurrencyConversionResult } from './currency-conversion-result';
 
 @Injectable({
   providedIn: 'root',
@@ -13,19 +14,15 @@ export class CurrencyApiService {
 
   createRequestUrl(currencyTo: string, currencyFrom: string, amount: number): string {
     return `${this.apiUrl}?to=${currencyTo}&from=${currencyFrom}&amount=${amount}`;
-    // Використовуємо шаблонні рядки для складання URL
   }
 
-  getRequestOptions(): any {
-    const apiKey = new HttpHeaders().set("apikey", this.apiKey);
-    return {
-      headers: apiKey
-    };
-  }
-
-  convertCurrency(currencyTo: string, currencyFrom: string, amount: number): Observable<any> {
+  convertCurrency(currencyTo: string, currencyFrom: string, amount: number): Observable<CurrencyConversionResult> {
     const url = this.createRequestUrl(currencyTo, currencyFrom, amount);
-    const requestOptions = this.getRequestOptions();
-    return this.http.get(url, requestOptions);
+    const headers = new HttpHeaders().set("apikey", this.apiKey);
+    return this.http.get<CurrencyConversionResult>(url, { headers });
+  }
+
+  formatNumber(number: number): number {
+    return +number.toFixed(2);
   }
 }

@@ -1,0 +1,25 @@
+.currency-header {
+  padding-bottom: 5px;
+
+  &__title {
+    margin: 0;
+  }
+
+  &__box {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  &__currency {
+    display: flex;
+  }
+
+  &__flag {
+    height: 18px;
+    padding-right: 3px;
+  }
+
+  &__rate {
+
+  }
+}

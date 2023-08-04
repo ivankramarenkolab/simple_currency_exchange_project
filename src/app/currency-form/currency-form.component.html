@@ -1,0 +1,62 @@
+<main class="currency-form">
+  <div class="container">
+    <h2 class="currency-form__title">Currency converter</h2>
+    <div class="currency-form__row">
+      <div class="currency-form__item">
+        <label class="currency-form__label" for="currency1"></label>
+        <ng-select
+          class="currency-form__select"
+          id="currency1"
+          [(ngModel)]="selectedCurrency1"
+          (ngModelChange)="onCurrencyChanged()"
+          [searchable]="false"
+        >
+          <ng-option value="USD">
+            <div class="currency-form__option">
+              <img src="../../assets/usd-flag.png" alt="USD" class="currency-form__flag__img"><p>USD</p>
+            </div>
+          </ng-option>
+          <ng-option value="EUR">
+            <div class="currency-form__option">
+            <img src="../../assets/eur-flag.jpg" alt="EUR" class="currency-form__flag__img"><p>EUR</p>
+            </div>
+          </ng-option>
+          <ng-option value="UAH">
+            <div class="currency-form__option">
+            <img src="../../assets/uah-flag.png" alt="UAH" class="currency-form__flag__img"><p>UAH</p>
+            </div>
+          </ng-option>
+        </ng-select>
+        <input class="currency-form__input" type="text" [(ngModel)]="amountCurrency1" (ngModelChange)="onAmountCurrencyChanged(1)">
+      </div>
+
+      <div class="currency-form__item">
+        <label class="currency-form__label" for="currency2"></label>
+        <ng-select
+          class="currency-form__select"
+          id="currency2"
+          [(ngModel)]="selectedCurrency2"
+          (ngModelChange)="onCurrencyChanged()"
+          [searchable]="false"
+        >
+          <ng-option value="USD">
+            <div class="currency-form__option">
+              <img src="../../assets/usd-flag.png" alt="USD" class="currency-form__flag__img"><p>USD</p>
+            </div>
+          </ng-option>
+          <ng-option value="EUR">
+            <div class="currency-form__option">
+              <img src="../../assets/eur-flag.jpg" alt="EUR" class="currency-form__flag__img"><p>EUR</p>
+            </div>
+          </ng-option>
+          <ng-option value="UAH">
+            <div class="currency-form__option">
+              <img src="../../assets/uah-flag.png" alt="UAH" class="currency-form__flag__img"><p>UAH</p>
+            </div>
+          </ng-option>
+        </ng-select>
+        <input class="currency-form__input" type="text" [(ngModel)]="amountCurrency2" (ngModelChange)="onAmountCurrencyChanged(2)"/>
+      </div>
+    </div>
+  </div>
+</main>

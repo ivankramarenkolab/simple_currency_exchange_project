@@ -1,7 +1,8 @@
-import {Component, OnDestroy} from '@angular/core';
-import {CurrencyApiService} from './currency-api.service';
-import {of, Subscription, timer} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import { Component, OnDestroy } from '@angular/core';
+import { CurrencyApiService } from '../currency-api.service';
+import { Subscription, timer } from 'rxjs';
+import { CurrencyConversionResult } from "../currency-conversion-result";
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-currency-form',
@@ -15,6 +16,7 @@ export class CurrencyFormComponent implements OnDestroy {
   amountCurrency2: number = 0;
   activeCurrencyInput: number = 1;
   private timerSubscription: Subscription | null = null;
+  private timerDelay = 2000;
 
   constructor(private currencyApiService: CurrencyApiService) {
   }
@@ -32,14 +34,13 @@ export class CurrencyFormComponent implements OnDestroy {
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
     }
-    this.timerSubscription = timer(2000).pipe(
-      switchMap(() => {
-        this.activeCurrencyInput = inputChange;
-        this.sendCurrencyConversionRequest(inputChange);
-        return of(null);
-      })
+
+    this.activeCurrencyInput = inputChange;
+
+    this.timerSubscription = timer(this.timerDelay).pipe(
+      debounceTime(this.timerDelay)
     ).subscribe(() => {
-      this.timerSubscription = null;
+      this.sendCurrencyConversionRequest(inputChange);
     });
   }
 
@@ -47,17 +48,18 @@ export class CurrencyFormComponent implements OnDestroy {
     const currencyTo = resultExchange === 1 ? this.selectedCurrency2 : this.selectedCurrency1;
     const currencyFrom = resultExchange === 1 ? this.selectedCurrency1 : this.selectedCurrency2;
     const amount = resultExchange === 1 ? this.amountCurrency1 : this.amountCurrency2;
+
     this.currencyApiService.convertCurrency(currencyTo, currencyFrom, amount)
       .subscribe(
-        (result: any) => {
+        (result: CurrencyConversionResult) => {
           if (resultExchange === 1) {
-            this.amountCurrency2 = result.result;
+            this.amountCurrency2 = this.currencyApiService.formatNumber(result.result);
           } else {
-            this.amountCurrency1 = result.result;
+            this.amountCurrency1 = this.currencyApiService.formatNumber(result.result);
           }
         },
-        (error: any) => {
-          alert(error);
+        (error) => {
+          alert(error.message);
         }
       );
   }
