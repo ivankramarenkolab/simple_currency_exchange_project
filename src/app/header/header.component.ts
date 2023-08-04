@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CurrencyApiService } from '../currency-api.service';
 import { CurrencyConversionResult } from "../currency-conversion-result";
-import { throwError} from "rxjs";
-import { catchError, combineLatestWith } from 'rxjs/operators';
+import { throwError, combineLatest } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -23,17 +23,15 @@ export class HeaderComponent implements OnInit {
     const usdCurrency$ = this.currencyApiService.convertCurrency('UAH', 'USD', 1);
     const eurCurrency$ = this.currencyApiService.convertCurrency('UAH', 'EUR', 1);
 
-    usdCurrency$.pipe(
-      combineLatestWith(eurCurrency$),
+    combineLatest([usdCurrency$, eurCurrency$]).pipe(
       catchError(error => {
         alert('Error fetching currency rates');
         return throwError(error);
-      })
-    ).subscribe(
-      ([usdResult, eurResult]: [CurrencyConversionResult, CurrencyConversionResult]) => {
+      }),
+      map(([usdResult, eurResult]: [CurrencyConversionResult, CurrencyConversionResult]) => {
         this.uahToUsd = this.currencyApiService.formatNumber(usdResult.result);
         this.uahToEur = this.currencyApiService.formatNumber(eurResult.result);
-      }
-    );
+      })
+    ).subscribe();
   }
 }

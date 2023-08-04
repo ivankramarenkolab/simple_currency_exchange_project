@@ -34,13 +34,13 @@ describe('HeaderComponent', () => {
     const usdResult: CurrencyConversionResult = {
       success: true,
       query: { from: 'UAH', to: 'USD', amount: 1 },
-      info: { timestamp: 1234567890, quote: 1.5 },
+      info: { timestamp: 1234567890, quote: 0.03 },
       result: 1.5
     };
     const eurResult: CurrencyConversionResult = {
       success: true,
       query: { from: 'UAH', to: 'EUR', amount: 1 },
-      info: { timestamp: 1234567890, quote: 1.2 },
+      info: { timestamp: 1234567890, quote: 0.02 },
       result: 1.2
     };
 
